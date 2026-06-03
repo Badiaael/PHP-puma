@@ -5,7 +5,7 @@ require_once __DIR__ . '/../includes/db.php';
 require_once __DIR__ . '/../includes/functions.php';
 require_once __DIR__ . '/../includes/auth.php';
 
-requireAdmin();
+requireAdmin(); // Vérifie que l'utilisateur est admin
 
 $db = getDB();
 

@@ -2,7 +2,7 @@
 $page_title = 'Inscription';
 require_once 'includes/config.php';
 require_once 'includes/db.php';
-require_once 'includes/auth.php';  // ← AJOUTE CETTE LIGNE
+require_once 'includes/auth.php';
 
 // Rediriger si déjà connecté
 if (isLoggedIn()) {
@@ -19,7 +19,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $confirm_password = $_POST['confirm_password'] ?? '';
     $full_name = $_POST['full_name'] ?? '';
     $phone = $_POST['phone'] ?? '';
-    
+
+    // Validations
     if (empty($email) || empty($password) || empty($full_name)) {
         $error = 'Veuillez remplir tous les champs obligatoires.';
     } elseif ($password !== $confirm_password) {
@@ -35,6 +36,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($stmt->fetch()) {
             $error = 'Cet email est déjà utilisé.';
         } else {
+            // Hashage du mot de passe
             $hashed_password = password_hash($password, PASSWORD_DEFAULT);
             $stmt = $db->prepare("INSERT INTO users (email, password, full_name, phone, role) VALUES (?, ?, ?, ?, 'user')");
             

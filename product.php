@@ -8,26 +8,26 @@ $product_id = $_GET['id'] ?? 0;
 $product = getProductById($product_id);
 
 if (!$product) {
-    header('Location: ' . SITE_URL);
+    header('Location: ' . SITE_URL); // Produit inexistant → accueil
     exit();
 }
 
 $page_title = $product['name'];
 
-// Récupérer les variantes (tailles/couleurs)
+// Récupération des variantes (tailles/couleurs)
 $db = getDB();
 $stmt = $db->prepare("SELECT * FROM product_variants WHERE product_id = ?");
 $stmt->execute([$product_id]);
 $variants = $stmt->fetchAll();
 
-// Récupérer les avis
+// Récupération des avis clients
 $stmt = $db->prepare("SELECT r.*, u.full_name FROM reviews r 
                       JOIN users u ON r.user_id = u.id 
                       WHERE r.product_id = ? ORDER BY r.created_at DESC");
 $stmt->execute([$product_id]);
 $reviews = $stmt->fetchAll();
 
-// Calcul moyenne notes
+// Calcul de la moyenne des notes
 $avg_rating = 0;
 if (!empty($reviews)) {
     $total = array_sum(array_column($reviews, 'rating'));
@@ -62,6 +62,7 @@ require_once 'includes/header.php';
                 <p><?= nl2br(htmlspecialchars($product['description'])) ?></p>
             </div>
             
+            <!-- Formulaire d'ajout au panier -->
             <?php if($product['stock'] > 0): ?>
                 <form action="cart.php" method="POST" class="add-to-cart-form">
                     <input type="hidden" name="product_id" value="<?= $product['id'] ?>">

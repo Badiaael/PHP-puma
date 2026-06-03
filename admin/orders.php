@@ -10,7 +10,7 @@ requireAdmin();
 $db = getDB();
 $message = '';
 
-// Changer statut
+// Changer le statut d'une commande
 if (isset($_POST['update_status'])) {
     $order_id = $_POST['order_id'];
     $status = $_POST['status'];
@@ -19,6 +19,7 @@ if (isset($_POST['update_status'])) {
     $message = "Statut mis à jour.";
 }
 
+// Affichage des commandes avec le nom du client
 $orders = $db->query("SELECT o.*, u.full_name as user_name 
                       FROM orders o 
                       LEFT JOIN users u ON o.user_id = u.id 

@@ -5,7 +5,7 @@ require_once '../includes/db.php';
 require_once '../includes/functions.php';
 require_once '../includes/auth.php';
 
-requireAdmin();
+requireAdmin(); // Vérifie que l'utilisateur est admin
 
 $db = getDB();
 $message = '';
@@ -21,10 +21,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save'])) {
     $is_new = isset($_POST['is_new']) ? 1 : 0;
     
     if ($id) {
+        // UPDATE
         $stmt = $db->prepare("UPDATE products SET name=?, description=?, price=?, stock=?, category_id=?, is_new=? WHERE id=?");
         $stmt->execute([$name, $description, $price, $stock, $category_id, $is_new, $id]);
         $message = "Produit modifié avec succès.";
     } else {
+        // INSERT
         $stmt = $db->prepare("INSERT INTO products (name, description, price, stock, category_id, is_new) VALUES (?, ?, ?, ?, ?, ?)");
         $stmt->execute([$name, $description, $price, $stock, $category_id, $is_new]);
         $message = "Produit ajouté avec succès.";

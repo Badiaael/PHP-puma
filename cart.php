@@ -5,7 +5,7 @@ require_once 'includes/db.php';
 require_once 'includes/functions.php';
 require_once 'includes/auth.php';
 
-// Initialisation du panier
+// Initialisation du panier en session
 if (!isset($_SESSION['cart'])) {
     $_SESSION['cart'] = [];
 }
@@ -21,13 +21,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         $found = false;
         foreach ($_SESSION['cart'] as &$item) {
             if ($item['id'] == $product_id) {
-                $item['quantity'] += $quantity;
+                $item['quantity'] += $quantity; // Augmente la quantité
                 $found = true;
                 break;
             }
         }
         if (!$found) {
-            $_SESSION['cart'][] = [
+            $_SESSION['cart'][] = [  // Nouvel article
                 'id' => $product['id'],
                 'name' => $product['name'],
                 'price' => $product['price'],
@@ -69,6 +69,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update'])) {
 require_once 'includes/header.php';
 ?>
 
+<!-- Affichage du panier -->
 <div class="cart-container">
     <h1>Mon panier</h1>
     

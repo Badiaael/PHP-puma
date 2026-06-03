@@ -8,6 +8,7 @@ require_once 'includes/auth.php';
 $success = '';
 $error = '';
 
+// trim ici supprime les espaces inutiles
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $name = trim($_POST['name'] ?? '');
     $email = trim($_POST['email'] ?? '');

@@ -5,7 +5,7 @@ require_once 'includes/db.php';
 require_once 'includes/functions.php';
 require_once 'includes/auth.php';
 
-requireLogin();
+requireLogin(); // Obligation d'être connecté
 
 if (empty($_SESSION['cart'])) {
     header('Location: cart.php');
@@ -30,13 +30,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $error = 'Veuillez remplir tous les champs obligatoires.';
     } else {
         $db = getDB();
-        $order_number = 'CMD-' . strtoupper(uniqid());
+        $order_number = 'CMD-' . strtoupper(uniqid()); // Unique
         $total = getCartTotal();
         
         try {
-            $db->beginTransaction();
+            $db->beginTransaction();  // Début de la transaction (tout ou rien)
             
-            // Créer la commande
+            // 1. Créer la commande
             $stmt = $db->prepare("INSERT INTO orders (user_id, order_number, total, first_name, last_name, phone, address, city, postal_code) 
                                   VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
             $stmt->execute([
@@ -53,22 +53,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             
             $order_id = $db->lastInsertId();
             
-            // Ajouter les articles
+            // 2. Ajouter les articles commandés
             foreach ($_SESSION['cart'] as $item) {
                 $stmt = $db->prepare("INSERT INTO order_items (order_id, product_id, quantity, price) VALUES (?, ?, ?, ?)");
                 $stmt->execute([$order_id, $item['id'], $item['quantity'], $item['price']]);
             }
             
-            $db->commit();
+            $db->commit();  // Valide la transaction
             
-            // Vider le panier
-            $_SESSION['cart'] = [];
+            $_SESSION['cart'] = []; // Vider le panier
             
             $success = "Commande validée ! Numéro : $order_number";
             header("refresh:3;url=order-history.php");
             
         } catch(Exception $e) {
-            $db->rollBack();
+            $db->rollBack(); // Annule tout en cas d'erreur
             $error = "Une erreur est survenue. Veuillez réessayer.";
         }
     }
@@ -77,6 +76,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 require_once 'includes/header.php';
 ?>
 
+<!-- Formulaire d'adresse de livraison -->
 <div class="checkout-container">
     <h1>Validation de la commande</h1>
     

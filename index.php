@@ -2,12 +2,12 @@
 $page_title = 'Accueil';
 require_once 'includes/config.php';
 require_once 'includes/db.php';
-require_once 'includes/auth.php';  // ← Charger auth APRÈS config
+require_once 'includes/auth.php';
 
 // Récupération des produits
 $db = getDB();
 
-// Construction de la requête avec filtres
+// Construction dynamique de la requête SQL selon les filtres
 $sql = "SELECT p.*, c.name as category_name FROM products p 
         LEFT JOIN categories c ON p.category_id = c.id WHERE 1=1";
 $params = [];
@@ -49,6 +49,7 @@ $categories = $db->query("SELECT * FROM categories ORDER BY name")->fetchAll();
 require_once 'includes/header.php';
 ?>
 
+<!-- Affichage des produits en grille -->
 <div class="hero">
     <div class="hero-content">
         <h2>Démarre ta <br>meilleure course</h2>
