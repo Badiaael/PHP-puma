@@ -35,5 +35,3 @@ function getDB() {
     return $db;
 }
 ?>
-
-// PDO = PHP Data Objects, une façon sécurisée de parler à MySQL
